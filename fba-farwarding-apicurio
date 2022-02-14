@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.0
 info:
-  title: hi i'm the name
+  title: fba-farwarding
   version: 1.0.0
   description: |
     this is the apiDesign doc for FBA farwarding
