@@ -133,14 +133,14 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://api.deliverr.com/oauth/v1/authorize
-          tokenUrl: https://api.deliverr.com/oauth/v1/token
+          authorizationUrl: 'https://api.deliverr.com/oauth/v1/authorize'
+          tokenUrl: 'https://api.deliverr.com/oauth/v1/token'
           scopes:
             read: Read access to your account
             write: Write access to your account
 info:
-  title: hi i'm the name
-  version: 1.1.0-tosa-beta.1
+  title: fba farwarding
+  version: 1.0.0
   description: this is the public api tosa of deliverr
   license:
     name: MGE
@@ -149,43 +149,43 @@ info:
 openapi: 3.0.0
 paths:
   /inventory/storage/:
-    get:
+    get: null
   /products:
-    get:
+    get: null
   /transfers:
-    get:
-  /tranfers/{transferId}:
-    get:
-    delete:
+    get: null
+  '/tranfers/{transferId}':
+    get: null
+    delete: null
   /tranfers:
-    post:
-  /transfers/{transferId}/{field}:
-    put:
-  /shipments/?{transferId}:
-    get:
-  /shipments/{shipmentId}:
-    get:
-    delete:
+    post: null
+  '/transfers/{transferId}/{field}':
+    put: null
+  '/shipments/?{transferId}':
+    get: null
+  '/shipments/{shipmentId}':
+    get: null
+    delete: null
   /carriers/:
-    get:
-  /carriers?shipmentId={shipmentId}:
-    get:
+    get: null
+  '/carriers?shipmentId={shipmentId}':
+    get: null
   /carriers:
-    post:
-  /carriers/{carrierId}:
-    delete:
-  /pricer/estimate-shipment/{shipmentId}:
-    get:
-  /pricer/estimate-transfer/{transferId}:
-    get:
+    post: null
+  '/carriers/{carrierId}':
+    delete: null
+  '/pricer/estimate-shipment/{shipmentId}':
+    get: null
+  '/pricer/estimate-transfer/{transferId}':
+    get: null
   /pricer/price-list:
-    get:
-  /transfer-tracker/tracke-shipment/{shipmentId}:
-    get:
-  /transfer-tracker/track-transfer/{transferId}:
-    get:
+    get: null
+  '/transfer-tracker/tracke-shipment/{shipmentId}':
+    get: null
+  '/transfer-tracker/track-transfer/{transferId}':
+    get: null
 servers:
-  - url: http://localhost:3000
+  - url: 'http://localhost:3000'
     description: Local development
-  - url: https://api.deliverr.com
+  - url: 'https://api.deliverr.com'
     description: Prod development
