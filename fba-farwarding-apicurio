@@ -1,0 +1,336 @@
+---
+openapi: 3.0.0
+info:
+  title: hi i'm the name
+  version: 1.0.0
+  description: |
+    this is the apiDesign doc for FBA farwarding
+  contact:
+    name: gal
+  license:
+    name: MGE
+servers:
+- url: http://localhost:3000
+  description: Local development
+- url: https://api.deliverr.com
+  description: Prod development
+paths:
+  /admin/v1/appclient:
+    get:
+      tags:
+      - admin
+      parameters:
+      - name: client_id
+        schema:
+          type: string
+        in: query
+        required: true
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliverrPublicApiError'
+          description: ""
+        "200":
+          content:
+            application/json:
+              schema: {}
+          description: Ok
+      security:
+      - basicAuth: []
+      operationId: GetApplicationClient
+      summary: Get Existing Application Client.
+    post:
+      tags:
+      - admin
+      parameters:
+      - name: client_name
+        schema:
+          type: string
+        in: query
+        required: true
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliverrPublicApiError'
+          description: ""
+        "200":
+          content:
+            application/json:
+              schema: {}
+          description: Ok
+      deprecated: false
+      security:
+      - basicAuth: []
+      operationId: GenerateApplicationClient
+      summary: Generate App Client.
+  /documentation/spec:
+    get:
+      tags:
+      - Documentation
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliverrPublicApiError'
+          description: ""
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Ok
+      operationId: GetRedocUi
+      summary: get redoc ui - HTML.
+  /documentation/raw:
+    get:
+      tags:
+      - Documentation
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliverrPublicApiError'
+          description: ""
+        "204":
+          description: No content
+      operationId: GetRawSpec
+      summary: get raw OpenApi spec.
+  /oauth/v1/authorize:
+    get:
+      tags:
+      - OAuth 2.0
+      parameters:
+      - name: redirect_uri
+        schema:
+          type: string
+        in: query
+        required: true
+      - name: scopes
+        schema:
+          type: string
+        in: query
+        required: true
+      responses:
+        "302":
+          description: Redirect
+      operationId: RedirectOAuth2Request
+      summary: URL to initiate flow of OAuth 2.0
+  /oauth/v1/token:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthTokenExchangeRequest'
+        required: true
+      tags:
+      - OAuth 2.0
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenExchangeResponse'
+          description: returns OAuthTokenExchangeResponse
+      operationId: ExchangeToken
+      summary: Token endpoint
+  /oauth/v1/callback:
+    get:
+      tags:
+      - OAuth 2.0
+      responses:
+        "302":
+          description: Redirect
+      operationId: Callback
+      summary: simple post request with prefix
+  /reports/v1/generate:
+    post:
+      requestBody:
+        description: report generation request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportGenerationRequest'
+        required: true
+      tags:
+      - reports
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportGenerationResponse'
+          description: Ok
+      security:
+      - OAuth2.0:
+        - public-api/reports
+      operationId: Generate
+      summary: Generate reports
+  /reports/v1/status/{reportName}:
+    get:
+      tags:
+      - reports
+      parameters:
+      - name: reportName
+        description: The name of the report to check the status of
+        schema:
+          type: string
+        in: path
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportStatusResponse'
+          description: Ok
+      security:
+      - OAuth2.0:
+        - public-api/reports
+      operationId: GetReportStatus
+      summary: Get the status of a report
+  /documentation/spec/sdf:
+    description: fsdfsdfsdf | fsdfsdfs |
+    get: {}
+    post: {}
+components:
+  schemas:
+    DeliverrPublicApiError:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          format: double
+          type: number
+        message:
+          type: string
+      additionalProperties: false
+    OAuthTokenExchangeResponse:
+      required:
+      - accessToken
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          format: double
+          type: number
+        tokenType:
+          type: string
+      additionalProperties: false
+    GrantTypeEnum:
+      enum:
+      - authorization_code
+      - refresh_token
+      type: string
+      x-enum-varnames:
+      - AuthorizationCode
+      - RefreshToken
+    OAuthTokenExchangeRequest:
+      required:
+      - grant_type
+      type: object
+      properties:
+        grant_type:
+          $ref: '#/components/schemas/GrantTypeEnum'
+        refresh_Token:
+          type: string
+        code:
+          type: string
+      additionalProperties: false
+    ReportGenerationResponse:
+      required:
+      - report_name
+      type: object
+      properties:
+        report_name:
+          type: string
+      additionalProperties: false
+    ReportTypeEnum:
+      enum:
+      - Billing-Invoices
+      - Inbounds-Packages
+      - Inbounds-Shipments
+      - Orders-All_Orders
+      - Orders-Shipments
+      - Inventory-Levels_Today
+      - Inventory-Units_In_Long_Term_Storage
+      - Inventory-Reconciliation
+      - Inbound-Shipping_Plan
+      - Inbound-Received_Inventory
+      - Products-All_SKUs_With_Alias_Counts
+      - Products-Available_SKUs_With_No_Aliases
+      - Products-Available_SKUs_With_Alias_Counts
+      - Returns-All_Returns
+      - Returns-All_SKUs
+      - Claims-Claims_Submitted
+      type: string
+      x-enum-varnames:
+      - billingInvoices
+      - inboundsPackages
+      - inboundsShipments
+      - ordersAllOrders
+      - ordersShipments
+      - inventoryLevelsToday
+      - inventoryUnitsInLongTermStorage
+      - inventoryReconciliation
+      - inboundShippingPlan
+      - inboundReceivedInventory
+      - productsAllSKUsWithAliasCounts
+      - productsAvailableSKUsWithNoAliases
+      - productsAvailableSKUsWithAliasCounts
+      - returnsAllReturns
+      - returnsAllSKUs
+      - claimsClaimsSubmitted
+    ReportGenerationRequest:
+      required:
+      - report_type
+      type: object
+      properties:
+        report_type:
+          $ref: '#/components/schemas/ReportTypeEnum'
+        start_date:
+          type: string
+        end_date:
+          type: string
+      additionalProperties: false
+    ReportStatusResponse:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+        urlExpiration:
+          format: date-time
+          type: string
+        url:
+          type: string
+      additionalProperties: false
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      name: auth
+      in: query
+    basicAuth:
+      scheme: basic
+      type: http
+    oAuth2:
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.deliverr.com/oauth/v1/authorize
+          tokenUrl: https://api.deliverr.com/oauth/v1/token
+          scopes:
+            read: Read access to your account
+            write: Write access to your account
+      type: oauth2
