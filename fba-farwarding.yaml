@@ -1,0 +1,191 @@
+components:
+  examples: {}
+  headers: {}
+  parameters: {}
+  requestBodies: {}
+  responses: {}
+  schemas:
+    DeliverrPublicApiError:
+      properties:
+        code:
+          type: number
+          format: double
+        message:
+          type: string
+      required:
+        - code
+        - message
+      type: object
+      additionalProperties: false
+    OAuthTokenExchangeResponse:
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: number
+          format: double
+        tokenType:
+          type: string
+      required:
+        - accessToken
+      type: object
+      additionalProperties: false
+    GrantTypeEnum:
+      enum:
+        - authorization_code
+        - refresh_token
+      type: string
+      x-enum-varnames:
+        - AuthorizationCode
+        - RefreshToken
+    OAuthTokenExchangeRequest:
+      properties:
+        grant_type:
+          $ref: '#/components/schemas/GrantTypeEnum'
+        refresh_Token:
+          type: string
+        code:
+          type: string
+      required:
+        - grant_type
+      type: object
+      additionalProperties: false
+    ReportGenerationResponse:
+      properties:
+        report_name:
+          type: string
+      required:
+        - report_name
+      type: object
+      additionalProperties: false
+    ReportTypeEnum:
+      enum:
+        - Billing-Invoices
+        - Inbounds-Packages
+        - Inbounds-Shipments
+        - Orders-All_Orders
+        - Orders-Shipments
+        - Inventory-Levels_Today
+        - Inventory-Units_In_Long_Term_Storage
+        - Inventory-Reconciliation
+        - Inbound-Shipping_Plan
+        - Inbound-Received_Inventory
+        - Products-All_SKUs_With_Alias_Counts
+        - Products-Available_SKUs_With_No_Aliases
+        - Products-Available_SKUs_With_Alias_Counts
+        - Returns-All_Returns
+        - Returns-All_SKUs
+        - Claims-Claims_Submitted
+      type: string
+      x-enum-varnames:
+        - billingInvoices
+        - inboundsPackages
+        - inboundsShipments
+        - ordersAllOrders
+        - ordersShipments
+        - inventoryLevelsToday
+        - inventoryUnitsInLongTermStorage
+        - inventoryReconciliation
+        - inboundShippingPlan
+        - inboundReceivedInventory
+        - productsAllSKUsWithAliasCounts
+        - productsAvailableSKUsWithNoAliases
+        - productsAvailableSKUsWithAliasCounts
+        - returnsAllReturns
+        - returnsAllSKUs
+        - claimsClaimsSubmitted
+    ReportGenerationRequest:
+      properties:
+        report_type:
+          $ref: '#/components/schemas/ReportTypeEnum'
+        start_date:
+          type: string
+        end_date:
+          type: string
+      required:
+        - report_type
+      type: object
+      additionalProperties: false
+    ReportStatusResponse:
+      properties:
+        status:
+          type: string
+        urlExpiration:
+          type: string
+          format: date-time
+        url:
+          type: string
+      required:
+        - status
+      type: object
+      additionalProperties: false
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      name: auth
+      in: query
+    basicAuth:
+      scheme: basic
+      type: http
+    oAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.deliverr.com/oauth/v1/authorize
+          tokenUrl: https://api.deliverr.com/oauth/v1/token
+          scopes:
+            read: Read access to your account
+            write: Write access to your account
+info:
+  title: hi i'm the name
+  version: 1.1.0-tosa-beta.1
+  description: this is the public api tosa of deliverr
+  license:
+    name: MGE
+  contact:
+    name: gal
+openapi: 3.0.0
+paths:
+  /inventory/storage/:
+    get:
+  /products:
+    get:
+  /transfers:
+    get:
+  /tranfers/{transferId}:
+    get:
+    delete:
+  /tranfers:
+    post:
+  /transfers/{transferId}/{field}:
+    put:
+  /shipments/?{transferId}:
+    get:
+  /shipments/{shipmentId}:
+    get:
+    delete:
+  /carriers/:
+    get:
+  /carriers?shipmentId={shipmentId}:
+    get:
+  /carriers:
+    post:
+  /carriers/{carrierId}:
+    delete:
+  /pricer/estimate-shipment/{shipmentId}:
+    get:
+  /pricer/estimate-transfer/{transferId}:
+    get:
+  /pricer/price-list:
+    get:
+  /transfer-tracker/tracke-shipment/{shipmentId}:
+    get:
+  /transfer-tracker/track-transfer/{transferId}:
+    get:
+servers:
+  - url: http://localhost:3000
+    description: Local development
+  - url: https://api.deliverr.com
+    description: Prod development
