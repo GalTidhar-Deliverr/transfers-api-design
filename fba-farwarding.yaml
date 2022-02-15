@@ -5,122 +5,251 @@ components:
   requestBodies: {}
   responses: {}
   schemas:
-    DeliverrPublicApiError:
-      properties:
-        code:
-          type: number
-          format: double
-        message:
-          type: string
-      required:
-        - code
-        - message
-      type: object
-      additionalProperties: false
-    OAuthTokenExchangeResponse:
-      properties:
-        accessToken:
-          type: string
-        refreshToken:
-          type: string
-        expiresIn:
-          type: number
-          format: double
-        tokenType:
-          type: string
-      required:
-        - accessToken
-      type: object
-      additionalProperties: false
-    GrantTypeEnum:
-      enum:
-        - authorization_code
-        - refresh_token
+Transfer:
+  type: object
+    properties:
+    id:
       type: string
-      x-enum-varnames:
-        - AuthorizationCode
-        - RefreshToken
-    OAuthTokenExchangeRequest:
-      properties:
-        grant_type:
-          $ref: '#/components/schemas/GrantTypeEnum'
-        refresh_Token:
-          type: string
-        code:
-          type: string
-      required:
-        - grant_type
-      type: object
-      additionalProperties: false
-    ReportGenerationResponse:
-      properties:
-        report_name:
-          type: string
-      required:
-        - report_name
-      type: object
-      additionalProperties: false
-    ReportTypeEnum:
-      enum:
-        - Billing-Invoices
-        - Inbounds-Packages
-        - Inbounds-Shipments
-        - Orders-All_Orders
-        - Orders-Shipments
-        - Inventory-Levels_Today
-        - Inventory-Units_In_Long_Term_Storage
-        - Inventory-Reconciliation
-        - Inbound-Shipping_Plan
-        - Inbound-Received_Inventory
-        - Products-All_SKUs_With_Alias_Counts
-        - Products-Available_SKUs_With_No_Aliases
-        - Products-Available_SKUs_With_Alias_Counts
-        - Returns-All_Returns
-        - Returns-All_SKUs
-        - Claims-Claims_Submitted
+    transferType:
+      $ref: '#/components/schemas/TransferType'
+    shipmentIds:
+      description: list of Shipment ids
+      type: array
+      items:
+        type: integer
+    createdAt:
       type: string
-      x-enum-varnames:
-        - billingInvoices
-        - inboundsPackages
-        - inboundsShipments
-        - ordersAllOrders
-        - ordersShipments
-        - inventoryLevelsToday
-        - inventoryUnitsInLongTermStorage
-        - inventoryReconciliation
-        - inboundShippingPlan
-        - inboundReceivedInventory
-        - productsAllSKUsWithAliasCounts
-        - productsAvailableSKUsWithNoAliases
-        - productsAvailableSKUsWithAliasCounts
-        - returnsAllReturns
-        - returnsAllSKUs
-        - claimsClaimsSubmitted
-    ReportGenerationRequest:
-      properties:
-        report_type:
-          $ref: '#/components/schemas/ReportTypeEnum'
-        start_date:
-          type: string
-        end_date:
-          type: string
-      required:
-        - report_type
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+    status:
+      $ref: '#/components/schemas/TransferStatus'
+Shipment:
+  type: object
+  properties:
+    id:
+      type: string
+    origin:
+      $ref: '#/components/schemas/Location'
+    destination:
+      $ref: '#/components/schemas/Location'
+    products:
+      description: list of Product ids
+      type: array
+      items:
+        type: integer
+    box_labels_url:
+      type: string
+    pallet_labels_url:
+      type: string
+    shipment_type:
+      $ref: '#/components/schemas/ShipmentType'
+    content:
+      $ref: '#/components/schemas/ShipmentContent'
+    expected_pickup:
+      type: string
+      format: date-time
+    actual_pickup:
+      type: string
+      format: date-time
+    carrier:
+      type: string
+    shipmentStatus:
+      $ref: '#/components/schemas/ShipmentStatus'
+Carrier:
+  type: object
+  properties:
+    id:
+      type: string
+    businessInfo:
+      $ref: '#/components/schemas/BusinessInfo'
+      type: BusinessInfo
+    website:
+      type: string
+    buisnessContacts:
+      type: array
+      items:
+        $ref: '#/components/schemas/BusinessContact'
+    services:
+      $ref: '#/components/schemas/ServiceType'
+    active_since:
+      type: string
+      format: date-time
+    scac:
+      description: 4 characters (see [Wikipedia](https://en.wikipedia.org/wiki/Standard_Carrier_Alpha_Code), needed for the BOL)
+      type: string
+BusinessContact:
+  type: object
+  properties:
+    id:
+      type: string
+    name:
+      type: string
+    general:
       type: object
-      additionalProperties: false
-    ReportStatusResponse:
       properties:
-        status:
-          type: string
-        urlExpiration:
-          type: string
-          format: date-time
-        url:
-          type: string
-      required:
-        - status
+        emails:
+          description: list of emails
+          type: array
+          items:
+            type: Object
+            properties:
+              buisnessUnit:
+                type: string
+              email:
+                type: string
+        addresses:
+          description: list of addresses
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+    phones:
+      discription: list of phones
+      type: array
+      items:
+        type: Object
+        properties:
+          contactName:
+            type: string
+          phoneNumber:
+            type: string
+    emails:
+      description: list of emails
+      type: array
+      items:
+        type: Object
+        properties:
+          name:
+            type: string
+          address:
+            type: string
+    addresses:
+      description: list of addresses
+      type: array
+      items:
+        $ref: '#/components/schemas/Location'
+Product:
+  type: object
+  properties:
+    id:
+      discription: DSKU
+      type: string
+    sku:
+      type: string
+    fnsku:
+      type: string
+    msku:
+      type: string
+    upc:
+      type: string
+    ean:
+      type: string
+    dimensions:
       type: object
-      additionalProperties: false
+      properties:
+        length:
+          type: integer
+        width:
+          type: integer
+        height:
+          type: integer
+        units:
+          $ref: '#/components/schemas/DimensionsUnits'
+        weight:
+          $ref: '#/components/schemas/WeightUnits'
+Location:
+  type: object
+  properties:
+    id:
+      type: string
+    title:
+      type: string
+    address:
+      type: object
+      properties:
+        line1:
+          type: string
+        line2:
+          type: string
+        city:
+          type: string
+        zip:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+Notification:
+  type: object
+  properties:
+    id:
+      type: string
+    created:
+      type: string
+      format: date-time
+    destination:
+      type: <resource_uri>
+    origin:
+      type: <resource_uri>
+    type:
+      type: ‘info’ | ‘alert’
+ShipmentContent:
+  type: object
+  properties:
+    num_pallets:
+      type: number
+    num_boxes:
+      type: number
+ServiceType:
+  type: string
+  enum:
+    - PARCEL
+    - LTL
+    - FL
+TransferStatus:
+  type:
+  enum:
+    - draft
+    - in progress
+    - complete
+    - cancelled
+TransferType:
+  type:
+    enum:
+      - ‘AMAZON_FULLFILMENT’
+ShipmentStatus:
+  type:
+  enum:
+    - draft
+    - requested
+    - ready for pickup
+    - scheduled
+    - shipped
+    - arrived at destination
+DimensionsUnits:
+  type:
+  enum:
+    - ‘m’
+    - ‘cm’
+    - ‘inch’
+    - ‘in’
+    - ‘ft’
+Weight:
+  type: object
+  properties:
+    value:
+      type: number
+      minimum: 0
+    units:
+      $ref: '#/components/schemas/WeightUnits'
+WeightUnits:
+  type:
+  enum:
+    - g
+    - kg
+    - ounce
+    - lb
   securitySchemes:
     apiKeyAuth:
       type: apiKey
