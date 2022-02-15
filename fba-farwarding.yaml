@@ -1,255 +1,363 @@
+openapi: 3.0.0
+info:
+  title: fba farwarding
+  version: 1.0.0
+  description: this is the public api tosa of deliverr
+  license:
+    name: MGE
+  contact:
+    name: gal
+servers:
+  - url: 'http://localhost:3000'
+    description: Local development
+  - url: 'https://api.deliverr.com'
+    description: Prod development
+paths:
+  /inventory/storage/:
+    get:
+      responses:
+        '200':
+          description: ok
+  /products:
+    get:
+      responses:
+        '200':
+          description: ok
+  /transfers:
+    get:
+      responses:
+        '200':
+          description: ok
+  '/tranfers/{transferId}':
+    get:
+      responses:
+        '200':
+          description: ok
+    delete:
+      responses:
+        '200':
+          description: ok
+  /tranfers:
+    post:
+      responses:
+        '200':
+          description: ok
+  '/transfers/{transferId}/{field}':
+    put:
+      responses:
+        '200':
+          description: ok
+  '/shipments/?{transferId}':
+    get:
+      responses:
+        '200':
+          description: ok
+  '/shipments/{shipmentId}':
+    get:
+      responses:
+        '200':
+          description: ok
+    delete:
+      responses:
+        '200':
+          description: ok
+  /carriers/:
+    get:
+      responses:
+        '200':
+          description: ok
+  '/carriers?shipmentId={shipmentId}':
+    get:
+      responses:
+        '200':
+          description: ok
+  /carriers:
+    post:
+      responses:
+        '200':
+          description: ok
+  '/carriers/{carrierId}':
+    delete:
+      responses:
+        '200':
+          description: ok
+  '/pricer/estimate-shipment/{shipmentId}':
+    get:
+      responses:
+        '200':
+          description: ok
+  '/pricer/estimate-transfer/{transferId}':
+    get:
+      responses:
+        '200':
+          description: ok
+  /pricer/price-list:
+    get:
+      responses:
+        '200':
+          description: ok
+  '/transfer-tracker/tracke-shipment/{shipmentId}':
+    get:
+      responses:
+        '200':
+          description: ok
+  '/transfer-tracker/track-transfer/{transferId}':
+    get:
+      responses:
+        '200':
+          description: ok
 components:
-  examples: {}
-  headers: {}
-  parameters: {}
-  requestBodies: {}
-  responses: {}
   schemas:
-Transfer:
-  type: object
-    properties:
-    id:
-      type: string
-    transferType:
-      $ref: '#/components/schemas/TransferType'
-    shipmentIds:
-      description: list of Shipment ids
-      type: array
-      items:
-        type: integer
-    createdAt:
-      type: string
-      format: date-time
-    updatedAt:
-      type: string
-      format: date-time
-    status:
-      $ref: '#/components/schemas/TransferStatus'
-Shipment:
-  type: object
-  properties:
-    id:
-      type: string
-    origin:
-      $ref: '#/components/schemas/Location'
-    destination:
-      $ref: '#/components/schemas/Location'
-    products:
-      description: list of Product ids
-      type: array
-      items:
-        type: integer
-    box_labels_url:
-      type: string
-    pallet_labels_url:
-      type: string
-    shipment_type:
-      $ref: '#/components/schemas/ShipmentType'
-    content:
-      $ref: '#/components/schemas/ShipmentContent'
-    expected_pickup:
-      type: string
-      format: date-time
-    actual_pickup:
-      type: string
-      format: date-time
-    carrier:
-      type: string
-    shipmentStatus:
-      $ref: '#/components/schemas/ShipmentStatus'
-Carrier:
-  type: object
-  properties:
-    id:
-      type: string
-    businessInfo:
-      $ref: '#/components/schemas/BusinessInfo'
-      type: BusinessInfo
-    website:
-      type: string
-    buisnessContacts:
-      type: array
-      items:
-        $ref: '#/components/schemas/BusinessContact'
-    services:
-      $ref: '#/components/schemas/ServiceType'
-    active_since:
-      type: string
-      format: date-time
-    scac:
-      description: 4 characters (see [Wikipedia](https://en.wikipedia.org/wiki/Standard_Carrier_Alpha_Code), needed for the BOL)
-      type: string
-BusinessContact:
-  type: object
-  properties:
-    id:
-      type: string
-    name:
-      type: string
-    general:
+    Transfer:
       type: object
       properties:
+        id:
+          type: string
+        transferType:
+          $ref: '#/components/schemas/TransferType'
+        shipmentIds:
+          description: list of Shipment ids
+          type: array
+          items:
+            type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/TransferStatus'
+    Shipment:
+      type: object
+      properties:
+        id:
+          type: string
+        origin:
+          $ref: '#/components/schemas/Location'
+        destination:
+          $ref: '#/components/schemas/Location'
+        products:
+          description: list of Product ids
+          type: array
+          items:
+            type: integer
+        box_labels_url:
+          type: string
+        pallet_labels_url:
+          type: string
+        shipment_type:
+          $ref: '#/components/schemas/ShipmentType'
+        content:
+          $ref: '#/components/schemas/ShipmentContent'
+        expected_pickup:
+          type: string
+          format: date-time
+        actual_pickup:
+          type: string
+          format: date-time
+        carrier:
+          type: string
+        shipmentStatus:
+          $ref: '#/components/schemas/ShipmentStatus'
+    Carrier:
+      type: object
+      properties:
+        id:
+          type: string
+        website:
+          type: string
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/Location'
+        buisnessContacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/BusinessContact'
+        services:
+          $ref: '#/components/schemas/ShipmentType'
+        active_since:
+          type: string
+          format: date-time
+        scac:
+          description: 4 characters (see [Wikipedia](https://en.wikipedia.org/wiki/Standard_Carrier_Alpha_Code), needed for the BOL)
+          type: string
+    BusinessContact:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        general:
+          type: object
+          properties:
+            emails:
+              description: list of emails
+              type: array
+              items:
+                type: object
+                properties:
+                  buisnessUnit:
+                    type: string
+                  email:
+                    type: string
+            addresses:
+              description: list of addresses
+              type: array
+              items:
+                $ref: '#/components/schemas/Location'
+        phones:
+          type: array
+          items:
+            type: object
+            properties:
+              contactName:
+                type: string
+              phoneNumber:
+                type: string
         emails:
           description: list of emails
           type: array
           items:
-            type: Object
+            type: object
             properties:
-              buisnessUnit:
+              name:
                 type: string
-              email:
+              address:
                 type: string
         addresses:
           description: list of addresses
           type: array
           items:
             $ref: '#/components/schemas/Location'
-    phones:
-      discription: list of phones
-      type: array
-      items:
-        type: Object
-        properties:
-          contactName:
-            type: string
-          phoneNumber:
-            type: string
-    emails:
-      description: list of emails
-      type: array
-      items:
-        type: Object
-        properties:
-          name:
-            type: string
-          address:
-            type: string
-    addresses:
-      description: list of addresses
-      type: array
-      items:
-        $ref: '#/components/schemas/Location'
-Product:
-  type: object
-  properties:
-    id:
-      discription: DSKU
-      type: string
-    sku:
-      type: string
-    fnsku:
-      type: string
-    msku:
-      type: string
-    upc:
-      type: string
-    ean:
-      type: string
-    dimensions:
+    Product:
       type: object
       properties:
-        length:
-          type: integer
-        width:
-          type: integer
-        height:
-          type: integer
+        id:
+          type: string
+        sku:
+          type: string
+        fnsku:
+          type: string
+        msku:
+          type: string
+        upc:
+          type: string
+        ean:
+          type: string
+        dimensions:
+          type: object
+          properties:
+            length:
+              type: integer
+            width:
+              type: integer
+            height:
+              type: integer
+            units:
+              $ref: '#/components/schemas/DimensionsUnits'
+            weight:
+              $ref: '#/components/schemas/WeightUnits'
+    Location:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        address:
+          type: object
+          properties:
+            line1:
+              type: string
+            line2:
+              type: string
+            city:
+              type: string
+            zip:
+              type: string
+            state:
+              type: string
+            country:
+              type: string
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+          format: date-time
+        destination:
+          type: string
+        origin:
+          type: string
+        notificationType:
+          $ref: '#/components/schemas/NotificationType'
+    ShipmentContent:
+      type: object
+      properties:
+        num_pallets:
+          type: number
+        num_boxes:
+          type: number
+    NotificationType:
+      type: string
+      enum:
+        - INFO
+        - ALERT
+    ShipmentType:
+      type: string
+      enum:
+        - PARCEL
+        - LTL
+        - FL
+
+    TransferStatus:
+      type: string
+      enum:
+        - draft
+        - in progress
+        - complete
+        - cancelled
+    TransferType:
+      type: string
+      enum:
+        - ‘AMAZON_FULLFILMENT’
+    ShipmentStatus:
+      type: string
+      enum:
+        - draft
+        - requested
+        - ready for pickup
+        - scheduled
+        - shipped
+        - arrived at destination
+    DimensionsUnits:
+      type: string
+      enum:
+        - ‘m’
+        - ‘cm’
+        - ‘inch’
+        - ‘in’
+        - ‘ft’
+    Weight:
+      type: object
+      properties:
+        value:
+          type: number
+          minimum: 0
         units:
-          $ref: '#/components/schemas/DimensionsUnits'
-        weight:
           $ref: '#/components/schemas/WeightUnits'
-Location:
-  type: object
-  properties:
-    id:
+    WeightUnits:
       type: string
-    title:
-      type: string
-    address:
-      type: object
-      properties:
-        line1:
-          type: string
-        line2:
-          type: string
-        city:
-          type: string
-        zip:
-          type: string
-        state:
-          type: string
-        country:
-          type: string
-Notification:
-  type: object
-  properties:
-    id:
-      type: string
-    created:
-      type: string
-      format: date-time
-    destination:
-      type: <resource_uri>
-    origin:
-      type: <resource_uri>
-    type:
-      type: ‘info’ | ‘alert’
-ShipmentContent:
-  type: object
-  properties:
-    num_pallets:
-      type: number
-    num_boxes:
-      type: number
-ServiceType:
-  type: string
-  enum:
-    - PARCEL
-    - LTL
-    - FL
-TransferStatus:
-  type:
-  enum:
-    - draft
-    - in progress
-    - complete
-    - cancelled
-TransferType:
-  type:
-    enum:
-      - ‘AMAZON_FULLFILMENT’
-ShipmentStatus:
-  type:
-  enum:
-    - draft
-    - requested
-    - ready for pickup
-    - scheduled
-    - shipped
-    - arrived at destination
-DimensionsUnits:
-  type:
-  enum:
-    - ‘m’
-    - ‘cm’
-    - ‘inch’
-    - ‘in’
-    - ‘ft’
-Weight:
-  type: object
-  properties:
-    value:
-      type: number
-      minimum: 0
-    units:
-      $ref: '#/components/schemas/WeightUnits'
-WeightUnits:
-  type:
-  enum:
-    - g
-    - kg
-    - ounce
-    - lb
+      enum:
+        - g
+        - kg
+        - ounce
+        - lb
   securitySchemes:
     apiKeyAuth:
       type: apiKey
@@ -267,55 +375,3 @@ WeightUnits:
           scopes:
             read: Read access to your account
             write: Write access to your account
-info:
-  title: fba farwarding
-  version: 1.0.0
-  description: this is the public api tosa of deliverr
-  license:
-    name: MGE
-  contact:
-    name: gal
-openapi: 3.0.0
-paths:
-  /inventory/storage/:
-    get: null
-  /products:
-    get: null
-  /transfers:
-    get: null
-  '/tranfers/{transferId}':
-    get: null
-    delete: null
-  /tranfers:
-    post: null
-  '/transfers/{transferId}/{field}':
-    put: null
-  '/shipments/?{transferId}':
-    get: null
-  '/shipments/{shipmentId}':
-    get: null
-    delete: null
-  /carriers/:
-    get: null
-  '/carriers?shipmentId={shipmentId}':
-    get: null
-  /carriers:
-    post: null
-  '/carriers/{carrierId}':
-    delete: null
-  '/pricer/estimate-shipment/{shipmentId}':
-    get: null
-  '/pricer/estimate-transfer/{transferId}':
-    get: null
-  /pricer/price-list:
-    get: null
-  '/transfer-tracker/tracke-shipment/{shipmentId}':
-    get: null
-  '/transfer-tracker/track-transfer/{transferId}':
-    get: null
-servers:
-  - url: 'http://localhost:3000'
-    description: Local development
-  - url: 'https://api.deliverr.com'
-    description: Prod development
-
