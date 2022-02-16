@@ -28,19 +28,6 @@ paths:
         Allows filtering by target marketplace
       parameters:
         - $ref: '#/components/parameters/TransferTarget'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              description: ''
-              x-examples:
-                example-1:
-                  msku: string
-                  dsku: string
-                  cases: 3
-                  qtyPerCase: 3
-                  qty: 3
-              type: object
       tags:
         - Inventory
       summary: Get Inventory for seller Id
@@ -397,7 +384,16 @@ components:
       description: descrives the current state of sellers inventory in deep storage
       x-tags:
         - Inventory
-      x-examples: {}
+      x-examples:
+        example-2:
+          sellerId: string
+          inventoryItems:
+            - msku: XXXXXXXXX-MSKU
+              dsku: XXXXXXX-DSKU
+              inventory:
+                - wherhouseId: wherhouse1
+                  cases: 5
+                  qtyPerCase: '24'
       x-internal: false
       properties:
         sellerId:
@@ -420,12 +416,13 @@ components:
                   properties:
                     wherhouseId:
                       type: string
+                      example: wherhouse1
                     cases:
-                      type: string
+                      type: number
+                      example: 5
                     qtyPerCase:
-                      type: string
-                    flshjfdgk:
-                      type: string
+                      type: number
+                      example: '24'
   securitySchemes:
     apiKeyAuth:
       type: apiKey
