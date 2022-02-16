@@ -13,7 +13,7 @@ servers:
   - url: 'https://api.deliverr.com'
     description: Prod development
 paths:
-  '/inventory/storage/{sellerId}':
+  '/inventory/{sellerId}':
     get:
       responses:
         '200':
@@ -22,14 +22,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SellerInventoryResponseModel'
-      operationId: getinventory
-      description: ''
+      operationId: Get Inventory for in bulk storage for seller Id and eligible transfer Target
+      description: |
+        Get current inventory stage of all seller items in bulk storage
+        Allows filtering by target marketplace
       parameters:
-        - schema:
-            type: string
-          in: query
-          name: filterByTarger
-          description: inventory target filter etc 'FBA'
+        - $ref: '#/components/parameters/TransferTarget'
       requestBody:
         content:
           application/json:
@@ -447,3 +445,12 @@ components:
           scopes:
             read: Read access to your account
             write: Write access to your account
+  parameters:
+    TransferTarget:
+      name: TransferTarget
+      in: query
+      required: false
+      schema:
+        type: string
+        default: FBA
+      description: Transfer Targets etc 'FBA'
