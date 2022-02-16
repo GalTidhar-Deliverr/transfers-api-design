@@ -41,6 +41,8 @@ paths:
                   qtyPerCase: 3
                   qty: 3
               type: object
+      tags:
+        - Inventory
     parameters:
       - schema:
           type: string
