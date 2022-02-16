@@ -13,11 +13,42 @@ servers:
   - url: 'https://api.deliverr.com'
     description: Prod development
 paths:
-  /inventory/storage/:
+  '/inventory/storage/{sellerId}':
     get:
       responses:
         '200':
           description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellerInventoryResponseModel'
+      operationId: getinventory
+      description: ''
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: filterByTarger
+          description: inventory target filter etc 'FBA'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              x-examples:
+                example-1:
+                  msku: string
+                  dsku: string
+                  cases: 3
+                  qtyPerCase: 3
+                  qty: 3
+              type: object
+    parameters:
+      - schema:
+          type: string
+        name: sellerId
+        in: path
+        required: true
   /products:
     get:
       responses:
@@ -181,7 +212,7 @@ components:
           type: string
           format: date-time
         scac:
-          description: 4 characters (see [Wikipedia](https://en.wikipedia.org/wiki/Standard_Carrier_Alpha_Code), needed for the BOL)
+          description: '4 characters (see [Wikipedia](https://en.wikipedia.org/wiki/Standard_Carrier_Alpha_Code), needed for the BOL)'
           type: string
     BusinessContact:
       type: object
@@ -314,7 +345,6 @@ components:
         - PARCEL
         - LTL
         - FL
-
     TransferStatus:
       type: string
       enum:
@@ -358,6 +388,48 @@ components:
         - kg
         - ounce
         - lb
+    SellerInventoryResponseModel:
+      title: SellerInventoryResponseModel
+      type: object
+      description: descrives the current state of sellers inventory in deep storage
+      x-tags:
+        - Inventory
+      x-examples:
+        example-1:
+          sellerId: string
+          inventoryItems:
+            - msku: XXXXXXXXX-MSKU
+              dsku: XXXXXXX-DSKU
+              inventory:
+                - wherhouseId: string
+                  cases: string
+                  qtyPerCase: string
+      properties:
+        sellerId:
+          type: string
+        inventoryItems:
+          type: array
+          items:
+            type: object
+            properties:
+              msku:
+                type: string
+                example: XXXXXXXXX-MSKU
+              dsku:
+                type: string
+                example: XXXXXXX-DSKU
+              inventory:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    wherhouseId:
+                      type: string
+                    cases:
+                      type: string
+                    qtyPerCase:
+                      type: string
+      x-internal: false
   securitySchemes:
     apiKeyAuth:
       type: apiKey
