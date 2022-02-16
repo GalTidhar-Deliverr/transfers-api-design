@@ -22,7 +22,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SellerInventoryResponseModel'
-      operationId: Get Inventory for in bulk storage for seller Id and eligible transfer Target
+      operationId: Get Inventory for seller Id and eligible transfer Target
       description: |
         Get current inventory stage of all seller items in bulk storage
         Allows filtering by target marketplace
